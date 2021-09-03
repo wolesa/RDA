@@ -1,6 +1,7 @@
 package com.wj.demoapp821.utils
 
 import android.view.View
+import androidx.annotation.IdRes
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -20,3 +21,6 @@ inline fun <T> Fragment.observeStateFlow(
     }
 }
 
+fun <T : View> Fragment.findView(@IdRes viewId: Int): Lazy<T?> = lazy(LazyThreadSafetyMode.NONE) {
+    view?.findViewById<T>(viewId)
+}
