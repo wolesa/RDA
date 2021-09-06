@@ -14,7 +14,6 @@ class BreweryDetailsFragment : Fragment() {
         fun newInstance() = BreweryDetailsFragment()
     }
 
-    private lateinit var viewModel: BreweryDetailsViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -25,7 +24,6 @@ class BreweryDetailsFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(BreweryDetailsViewModel::class.java)
         // TODO: Use the ViewModel
     }
 
