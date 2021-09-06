@@ -9,7 +9,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 val dataModule = module {
-    val BASE_URL = ""
+    val BASE_URL = "https://api.openbrewerydb.org/"
 
     single<BreweryRepo> { BreweryRepoImpl(get()) }
 
