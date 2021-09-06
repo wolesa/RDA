@@ -2,28 +2,73 @@ package com.wj.demoapp821.view.brewerieslist
 
 import android.os.Bundle
 import android.view.View
+import android.widget.ProgressBar
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.OnScrollListener
 import com.wj.demoapp821.R
 import com.wj.demoapp821.utils.findView
 import com.wj.demoapp821.utils.observeStateFlow
 import com.wj.demoapp821.view.main.MainViewModel
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+
+const val LOADING_ITEMS_BUFFER = 3
 
 class BreweriesListFragment : Fragment(R.layout.breweries_list_fragment) {
 
-    private val viewModel: MainViewModel by activityViewModels()
+    private val viewModel by sharedViewModel<MainViewModel>()
     private val breweriesList: RecyclerView? by findView(R.id.breweriesList)
-    private val adapter = BreweriesAdapter()
+    private val progressBar: ProgressBar? by findView(R.id.progress_bar)
+
+    private val breweriesAdapter = BreweriesAdapter()
+
+    private val onScrollListener = object : OnScrollListener() {
+        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+            super.onScrollStateChanged(recyclerView, newState)
+
+            (recyclerView.layoutManager as LinearLayoutManager).run {
+                if (findLastVisibleItemPosition() - itemCount <= LOADING_ITEMS_BUFFER) {
+                    showLoading()
+                    viewModel.getNextPage()
+                }
+            }
+        }
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        breweriesList?.adapter = adapter
-
-        observeStateFlow(viewModel.breweriesListStateFlow) {
-            adapter.submitList(it)
+        val dividerItem = DividerItemDecoration(context, DividerItemDecoration.VERTICAL).apply {
+            setDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.divider) ?: return@apply)
         }
 
+        breweriesList?.apply {
+            layoutManager = LinearLayoutManager(
+                this@BreweriesListFragment.requireContext(),
+                LinearLayoutManager.VERTICAL,
+                false
+            )
+            adapter = breweriesAdapter
+            addItemDecoration(dividerItem)
+            addOnScrollListener(onScrollListener)
+        }
+
+        observeStateFlow(viewModel.breweriesListStateFlow) { newList ->
+            breweriesAdapter.apply { submitList(currentList + newList) }
+            hideLoading()
+        }
+
+    }
+
+    private fun showLoading() {
+        progressBar?.visibility = View.VISIBLE
+    }
+
+    private fun hideLoading() {
+        breweriesList?.visibility = View.VISIBLE
+        progressBar?.visibility = View.GONE
     }
 }
