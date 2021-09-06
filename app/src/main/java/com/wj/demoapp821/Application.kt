@@ -7,18 +7,21 @@ import com.wj.domain.domainModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
+import org.koin.core.logger.Level
 
-class RDAApplication: Application() {
+class RDAApplication : Application() {
     override fun onCreate() {
         super.onCreate()
 
         startKoin {
-            androidLogger()
+            androidLogger(Level.DEBUG)
             androidContext(this@RDAApplication)
             modules(
-                viewModule,
-                dataModule,
-                domainModule,
+                listOf(
+                    domainModule,
+                    dataModule,
+                    viewModule,
+                )
             )
         }
     }
