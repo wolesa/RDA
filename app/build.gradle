@@ -50,8 +50,6 @@ dependencies {
     //di
     implementation "io.insert-koin:koin-core:3.1.2"
     implementation "io.insert-koin:koin-android:3.1.2"
-    implementation "io.insert-koin:koin-android-viewmodel:3.1.2"
-    implementation "io.insert-koin:koin-android-scope:3.1.2"
 
     // test
     testImplementation 'junit:junit:4.13.2'
