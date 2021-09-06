@@ -30,7 +30,7 @@ class MainViewModel(private val getBreweriesUseCase: GetBreweriesUseCase) : View
                 pageNumber = pageNumber
             )
 
-            _breweriesListStateFlow.value = breweries
+            _breweriesListStateFlow.value = _breweriesListStateFlow.value + breweries
         }
     }
 }

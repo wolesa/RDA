@@ -30,7 +30,7 @@ class BreweriesListFragment : Fragment(R.layout.breweries_list_fragment) {
             super.onScrollStateChanged(recyclerView, newState)
 
             (recyclerView.layoutManager as LinearLayoutManager).run {
-                if (findLastVisibleItemPosition() - itemCount <= LOADING_ITEMS_BUFFER) {
+                if (itemCount - findLastVisibleItemPosition() <= LOADING_ITEMS_BUFFER) {
                     showLoading()
                     viewModel.getNextPage()
                 }
@@ -57,7 +57,7 @@ class BreweriesListFragment : Fragment(R.layout.breweries_list_fragment) {
         }
 
         observeStateFlow(viewModel.breweriesListStateFlow) { newList ->
-            breweriesAdapter.apply { submitList(currentList + newList) }
+            breweriesAdapter.apply { submitList(newList) }
             hideLoading()
         }
 
