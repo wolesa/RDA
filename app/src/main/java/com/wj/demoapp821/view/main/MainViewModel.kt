@@ -33,4 +33,8 @@ class MainViewModel(private val getBreweriesUseCase: GetBreweriesUseCase) : View
             _breweriesListStateFlow.value = _breweriesListStateFlow.value + breweries
         }
     }
+
+    fun onBreweryClicked(brewery: Brewery){
+        _breweryDetailsStateFlow.value = brewery
+    }
 }

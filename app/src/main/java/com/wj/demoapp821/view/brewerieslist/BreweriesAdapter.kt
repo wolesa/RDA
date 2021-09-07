@@ -7,15 +7,17 @@ import android.widget.TextView
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.wj.demoapp821.R
+import com.wj.demoapp821.common.RecyclerViewOnClickListener
 import com.wj.domain.model.Brewery
 
-class BreweriesAdapter : ListAdapter<Brewery, BreweriesAdapter.BreweryViewHolder>(BreweriesAdapterDiffCallback) {
+class BreweriesAdapter(private val onClickListener: RecyclerViewOnClickListener<Brewery>) :
+    ListAdapter<Brewery, BreweriesAdapter.BreweryViewHolder>(BreweriesAdapterDiffCallback) {
 
-    class BreweryViewHolder(view: View): RecyclerView.ViewHolder(view) {
+    class BreweryViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         private val breweryName = view.findViewById<TextView>(R.id.breweryName)
         private val breweryCountry = view.findViewById<TextView>(R.id.breweryCountry)
 
-        fun bind(brewery: Brewery){
+        fun bind(brewery: Brewery) {
             breweryName.text = brewery.name
             breweryCountry.text = brewery.country
         }
@@ -27,6 +29,10 @@ class BreweriesAdapter : ListAdapter<Brewery, BreweriesAdapter.BreweryViewHolder
         )
 
     override fun onBindViewHolder(holder: BreweryViewHolder, position: Int) {
-        holder.bind(getItem(position))
+        val item = getItem(position)
+        holder.run {
+            bind(item)
+            itemView.setOnClickListener { onClickListener.onItemClick(item) }
+        }
     }
 }
