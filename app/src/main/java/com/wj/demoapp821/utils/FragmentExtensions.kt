@@ -1,7 +1,5 @@
 package com.wj.demoapp821.utils
 
-import android.view.View
-import androidx.annotation.IdRes
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
