@@ -8,10 +8,7 @@ interface BreweriesApi {
 
     @GET("breweries")
     suspend fun getBreweries(
-        @Query("by_city") city: String? = null,
-        @Query("by_name") name: String? = null,
         @Query("page") pageNumber: Int? = null,
-        @Query("numberOnPage") breweriesOnPage: Int? = null,
     ): List<BreweryPojo>
 
 }

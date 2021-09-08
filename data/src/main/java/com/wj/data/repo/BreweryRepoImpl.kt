@@ -7,11 +7,8 @@ import com.wj.domain.repo.BreweryRepo
 class BreweryRepoImpl(private val breweriesApi: BreweriesApi) : BreweryRepo {
 
     override suspend fun getBreweries(
-        city: String?,
-        name: String?,
         pageNumber: Int?,
-        breweriesOnPage: Int?,
-    ): List<Brewery> = breweriesApi.getBreweries(city, name, pageNumber, breweriesOnPage)
+    ): List<Brewery> = breweriesApi.getBreweries(pageNumber)
         .mapNotNull { breweryPojo ->
             Brewery(
                 breweryPojo.id ?: return@mapNotNull null,
