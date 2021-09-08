@@ -5,6 +5,7 @@ import android.view.View
 import android.widget.ProgressBar
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -12,10 +13,11 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.OnScrollListener
 import com.wj.demoapp821.R
 import com.wj.demoapp821.common.RecyclerViewOnClickListener
-import com.wj.demoapp821.utils.findView
 import com.wj.demoapp821.utils.observeStateFlow
 import com.wj.demoapp821.view.main.MainViewModel
 import com.wj.domain.model.Brewery
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 const val LOADING_ITEMS_BUFFER = 3
@@ -23,8 +25,9 @@ const val LOADING_ITEMS_BUFFER = 3
 class BreweriesListFragment : Fragment(R.layout.breweries_list_fragment) {
 
     private val viewModel by sharedViewModel<MainViewModel>()
-    private val breweriesList: RecyclerView? by findView(R.id.breweriesList)
-    private val progressBar: ProgressBar? by findView(R.id.progress_bar)
+
+    private var breweriesList: RecyclerView? = null
+    private var progressBar: ProgressBar? = null
 
     private val breweriesAdapter = BreweriesAdapter(object : RecyclerViewOnClickListener<Brewery> {
         override fun onItemClick(item: Brewery) {
@@ -48,6 +51,9 @@ class BreweriesListFragment : Fragment(R.layout.breweries_list_fragment) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        breweriesList = view.findViewById(R.id.breweriesList)
+        progressBar = view.findViewById(R.id.progress_bar)
+
         val dividerItem = DividerItemDecoration(context, DividerItemDecoration.VERTICAL).apply {
             setDrawable(
                 ContextCompat.getDrawable(requireContext(), R.drawable.divider) ?: return@apply
@@ -70,10 +76,11 @@ class BreweriesListFragment : Fragment(R.layout.breweries_list_fragment) {
             hideLoading()
         }
 
-        observeStateFlow(viewModel.breweryDetailsStateFlow) {
-            it?.run { findNavController().navigate(R.id.action_breweriesListFragment_to_breweryDetailsFragment) }
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.sharedFlow.collect {
+                findNavController().navigate(R.id.action_breweriesListFragment_to_breweryDetailsFragment)
+            }
         }
-
     }
 
     private fun showLoading() {

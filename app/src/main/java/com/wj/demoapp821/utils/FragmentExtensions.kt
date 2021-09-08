@@ -20,7 +20,3 @@ inline fun <T> Fragment.observeStateFlow(
         }
     }
 }
-
-fun <T : View> Fragment.findView(@IdRes viewId: Int): Lazy<T?> = lazy(LazyThreadSafetyMode.NONE) {
-    view?.findViewById<T>(viewId)
-}
